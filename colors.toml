@@ -54,7 +54,7 @@ selection_background     = "#222E36"
 selection_foreground     = "#ECEDEE"
 
 # Window borders.
-hyprland_active_border   = "rgba(739BB5ee)"
+hyprland_active_border   = "rgba(99C1DCee) rgba(222E36cc) 45deg"
 hyprland_inactive_border = "rgba(283943cc)"
 
 # Semantic and ANSI. Yellow is the warning.

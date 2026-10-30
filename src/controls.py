@@ -81,10 +81,10 @@ def picker(section, p, w):
     w(f'selected-background       = "{p["selection"]}"\n')
     w("selected-background-alpha = 0.60\n")
     w(f'selected-text             = "{p["accent"]}"\n')
-    w(f'selected-border           = "{p["selection"]}"\n')
-    w("selected-border-alpha     = 0.0\n")
+    w(f'selected-border           = "{p["accent"]}"\n')
+    w("selected-border-alpha     = 0.40\n")
     if section == "launcher":
-        w("selected-border-width     = 0\n")
+        w("selected-border-width     = 1\n")
 
 
 def lock(p, w):
