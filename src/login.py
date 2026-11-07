@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Build the Samurai SDDM artwork and layout without starting an authentication session."""
+import math
 from pathlib import Path
 import shutil
 import subprocess
@@ -8,34 +9,34 @@ import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
 
+OMA_PATH = '''M1620 3370 c-401 -71 -758 -305 -989 -648 -62 -93 -156 -293 -186 -397 -109 -385 -74 -763 102 -1108 208 -408 579 -692 1030 -788 125 -27 357 -36 487 -20 131 17 293 61 406 111 134 59 160 68 236 80 93 15 111 9 119 -39 6 -38 7 -38 58 -45 69 -8 2231 -8 2375 1 l112 6 0 109 c0 102 2 112 26 144 44 57 86 77 154 72 86 -6 139 -44 365 -262 l197 -189 141 139 c390 383 846 837 1088 1085 l269 277 -529 533 c-290 294 -628 630 -750 748 l-221 213 -208 -199 c-228 -219 -278 -253 -365 -253 -58 0 -102 23 -141 74 -24 33 -26 42 -26 144 l0 109 -46 7 c-26 3 -597 6 -1269 6 l-1223 0 -6 -44 c-8 -53 -19 -57 -115 -45 -70 8 -101 19 -250 83 -248 107 -569 144 -841 96z m1451 -675 c107 -70 207 -264 261 -506 20 -89 23 -131 23 -294 0 -163 -3 -205 -23 -294 -46 -206 -121 -369 -212 -462 -124 -127 -221 -95 -267 86 -16 63 -18 126 -18 665 0 438 3 611 13 654 35 169 115 223 223 151z m2187 -355 c81 -50 102 -141 102 -445 0 -304 -21 -395 -102 -445 -81 -49 -185 -5 -334 144 -129 130 -159 186 -159 301 0 115 30 171 159 301 149 149 253 193 334 144z'''
 
-def samurai_kamon(cx, cy, radius, stroke, fill):
-    parts = []
-    r_outer = radius
-    r_inner = radius - 6
-    parts.append(f'<g stroke="{stroke}" fill="none" stroke-linecap="round" stroke-linejoin="round">')
-    parts.append(f'<circle cx="{cx}" cy="{cy}" r="{r_outer}" stroke-width="2.5"/>')
-    parts.append(f'<circle cx="{cx}" cy="{cy}" r="{r_inner}" stroke-width="1.2" stroke-dasharray="5 3"/>')
-    for angle in [-45, 45]:
-        parts.append(f'<g transform="translate({cx},{cy}) rotate({angle})">')
-        # Blade
-        parts.append(f'<path d="M -3, -8 L -3, -60 Q -3, -68 0, -72 Q 3, -68 3, -60 L 3, -8 Z" fill="{fill}" stroke="{stroke}" stroke-width="1.2"/>')
-        parts.append(f'<line x1="0" y1="-10" x2="0" y2="-66" stroke="{stroke}" stroke-width="0.8"/>')
-        # Tsuba
-        parts.append(f'<ellipse cx="0" cy="-5" rx="10" ry="3.5" fill="{stroke}" stroke="{fill}" stroke-width="1"/>')
-        # Tsuka
-        parts.append(f'<rect x="-2.5" y="-1.5" width="5" height="38" rx="1.5" fill="{stroke}"/>')
-        # Kashira
-        parts.append(f'<ellipse cx="0" cy="38" rx="3.5" ry="2" fill="{fill}" stroke="{stroke}" stroke-width="0.8"/>')
-        parts.append('</g>')
-    parts.append(f'<circle cx="{cx}" cy="{cy}" r="11" fill="{stroke}" stroke="{fill}" stroke-width="1.5"/>')
-    parts.append(f'<circle cx="{cx}" cy="{cy}" r="4" fill="{fill}" stroke="none"/>')
-    for deg in [0, 90, 180, 270]:
-        parts.append(f'<g transform="translate({cx},{cy}) rotate({deg})">')
-        parts.append(f'<polygon points="0,-72 3,-77 0,-82 -3,-77" fill="{fill}" stroke="none"/>')
-        parts.append('</g>')
-    parts.append('</g>')
-    return ''.join(parts)
+
+def enso_path(cx, cy, radius, stroke_scale=1.0):
+    steps = 400
+    outer, inner = [], []
+    for i in range(steps + 1):
+        t = i / steps
+        theta = 0.26 * math.pi + t * 1.86 * math.pi
+        w = (4 + 22 * (math.sin(t * math.pi) ** 0.85)) * stroke_scale
+        ro = radius + w / 2
+        ri = radius - w / 2
+        outer.append(f'{cx + ro * math.cos(theta):.2f},{cy + ro * math.sin(theta):.2f}')
+        inner.append(f'{cx + ri * math.cos(theta):.2f},{cy + ri * math.sin(theta):.2f}')
+    pts = outer + inner[::-1]
+    return 'M ' + ' L '.join(pts) + ' Z'
+
+
+def enso_omarchy_svg(cx, cy, enso_r, oma_w, enso_fill, oma_fill):
+    s = oma_w / 800.0
+    oma_h = 378.0 * s
+    tx = cx - oma_w / 2.0
+    ty = cy + oma_h / 2.0
+    enso_d = enso_path(cx, cy, enso_r, stroke_scale=enso_r / 180.0)
+    return (f'<path d="{enso_d}" fill="{enso_fill}"/>'
+            f'<g transform="translate({tx:.2f},{ty:.2f}) scale({0.1 * s:.5f},{-0.1 * s:.5f})">'
+            f'<path d="{OMA_PATH}" fill="{oma_fill}"/>'
+            f'</g>')
 
 
 def build(destination):
@@ -51,10 +52,11 @@ def build(destination):
         subprocess.run(['magick', str(destination/name), '-channel', 'RGB',
                         '+level-colors', f'{colour},{colour}', str(destination/name)], check=True)
 
-    kamon = samurai_kamon(300, 110, 80, palette["line"], palette["foreground"])
+    logo_content = enso_omarchy_svg(300, 110, enso_r=78, oma_w=110,
+                                   enso_fill=palette['line'], oma_fill=palette['foreground'])
     logo = (f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="220" '
             f'viewBox="0 0 600 220">'
-            f'<g opacity="0.75">{kamon}</g></svg>')
+            f'<g opacity="0.85">{logo_content}</g></svg>')
     (destination/'logo.svg').write_text(logo)
     subprocess.run(['rsvg-convert', str(destination/'logo.svg'), '-o', str(destination/'logo.png')], check=True)
     (destination/'theme.conf').write_text('[General]\n')

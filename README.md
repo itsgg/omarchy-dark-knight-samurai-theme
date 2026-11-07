@@ -11,9 +11,9 @@ The monochromatic palette is tailored directly for the Samurai sumi-e artwork.
 
 | Wallpaper | Boot and disk-unlock screen |
 |---|---|
-| ![Samurai wallpaper](backgrounds/1-samurai.png) | ![Samurai Kamon splash](preview-unlock.png) |
+| ![Samurai wallpaper](backgrounds/1-samurai.png) | ![Samurai Ensō splash](preview-unlock.png) |
 
-Samurai features an ink-wash / sumi-e artwork paired with an authentic Japanese crossed-katana Kamon crest on `#09090B` obsidian ground.
+Samurai features an ink-wash / sumi-e artwork paired with an authentic Japanese Ensō Omarchy emblem on `#09090B` obsidian ground.
 
 ## Install
 
