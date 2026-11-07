@@ -73,6 +73,8 @@ def sample(path, buckets=16):
         except ValueError:
             continue
         hx = line.split("#")[1].split()[0]
+        if len(hx) == 8:
+            hx = hx[:6]
         if len(hx) != 6:
             continue
         r, g, b = (int(hx[i:i + 2], 16) / 255 for i in (0, 2, 4))
@@ -441,11 +443,11 @@ def build(measured):
     p["selection_foreground"] = p["bright_foreground"]
     p["active_border"] = lch(BORDER_LIGHT, chroma, accent_hue)
 
-    # Borders. Active is solid, the accent's colour and darker than body
-    # text; inactive is the image's own mid tone. The active border was a 45
-    # degree gradient to accent_dim once, and on a 2px line the dark half read
-    # as a missing border.
-    p["hyprland_active_border"] = f'rgba({p["active_border"][1:]}ee)'
+    # Borders. Active is a specular 45-degree gradient from accent to a
+    # refined steel tint (kept brighter than inactive border #283943); inactive is mid tone.
+    p["active_border"] = lch(BORDER_LIGHT, chroma, accent_hue)
+    active_base = lch(BORDER_LIGHT * 0.65, chroma * 0.50, accent_hue)
+    p["hyprland_active_border"] = f'rgba({p["active_border"][1:]}ee) rgba({active_base[1:]}cc) 45deg'
     p["hyprland_inactive_border"] = f'rgba({p["line"][1:]}cc)'
 
     # Semantic and ANSI.

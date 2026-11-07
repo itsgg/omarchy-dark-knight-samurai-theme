@@ -20,11 +20,11 @@ class PlymouthTest(unittest.TestCase):
     def test_variations_install_distinct_emblems(self):
         with tempfile.TemporaryDirectory() as scratch:
             logos = []
-            for variation in ('gotham', 'cape'):
+            for variation in ('gotham', 'cape', 'samurai'):
                 stage = Path(scratch)/variation
                 build(stage, variation)
                 logos.append((stage/'logo.png').read_bytes())
-            self.assertNotEqual(*logos)
+            self.assertEqual(len(set(logos)), 3)
 
     def test_failed_preview_render_preserves_previous_image(self):
         with tempfile.TemporaryDirectory() as scratch:

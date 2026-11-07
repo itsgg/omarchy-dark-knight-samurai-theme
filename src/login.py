@@ -11,7 +11,7 @@ from bat import path
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def build(destination):
+def build(destination, variation='samurai'):
     destination.mkdir(parents=True, exist_ok=True)
     palette = tomllib.loads((ROOT/'colors.toml').read_text())
     source = Path('/usr/share/sddm/themes/omarchy')
@@ -23,9 +23,18 @@ def build(destination):
             colour = palette['line']
         subprocess.run(['magick', str(destination/name), '-channel', 'RGB',
                         '+level-colors', f'{colour},{colour}', str(destination/name)], check=True)
-    logo = (f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="220" '
-            f'viewBox="0 0 600 220"><path d="{path(.44, 300, 110)}" '
-            f'fill="{palette["line"]}" fill-opacity="0.6"/></svg>')
+    if variation == 'samurai':
+        logo = (f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="220" '
+                f'viewBox="0 0 600 220">'
+                f'<g opacity="0.6">'
+                f'<circle cx="300" cy="110" r="80" fill="none" stroke="{palette["line"]}" stroke-width="3"/>'
+                f'<circle cx="300" cy="110" r="74" fill="none" stroke="{palette["line"]}" stroke-width="1.5"/>'
+                f'<path d="{path(.22, 300, 110)}" fill="{palette["line"]}"/>'
+                f'</g></svg>')
+    else:
+        logo = (f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="220" '
+                f'viewBox="0 0 600 220"><path d="{path(.44, 300, 110)}" '
+                f'fill="{palette["line"]}" fill-opacity="0.6"/></svg>')
     (destination/'logo.svg').write_text(logo)
     subprocess.run(['rsvg-convert', str(destination/'logo.svg'), '-o', str(destination/'logo.png')], check=True)
     (destination/'theme.conf').write_text('[General]\n')

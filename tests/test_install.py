@@ -25,7 +25,7 @@ class InstallerTest(unittest.TestCase):
         self.checkout.mkdir()
         for name in ("install.sh", "colors.toml", "neovim.lua"):
             shutil.copy2(ROOT / name, self.checkout / name)
-        self.target = self.home / ".config/omarchy/themes/dark-knight"
+        self.target = self.home / ".config/omarchy/themes/dark-knight-samurai"
         self.target.parent.mkdir(parents=True)
         self.bin = self.home / "bin"
         self.bin.mkdir()
@@ -47,7 +47,7 @@ class InstallerTest(unittest.TestCase):
         )
 
     def backups(self):
-        return list((self.home / ".local/state/dark-knight/backups").glob("*/theme"))
+        return list((self.home / ".local/state/dark-knight-samurai/backups").glob("*/theme"))
 
     def test_fresh_and_repeated_install(self):
         for _ in range(2):
@@ -56,7 +56,7 @@ class InstallerTest(unittest.TestCase):
         self.assertEqual(os.readlink(self.target), str(HOME_PATH / self.checkout.name))
         self.assertEqual(self.backups(), [])
         self.assertEqual((self.home / "applied").read_text(),
-                         "theme set dark-knight\ntheme set dark-knight\n")
+                         "theme set Dark Knight Samurai\ntheme set Dark Knight Samurai\n")
 
     def test_existing_directory_is_preserved(self):
         self.target.mkdir()
@@ -74,9 +74,9 @@ class InstallerTest(unittest.TestCase):
 
     def test_refuses_to_move_its_own_checkout(self):
         shutil.copytree(self.checkout, self.target)
-        result = self.run_install(".config/omarchy/themes/dark-knight")
+        result = self.run_install(".config/omarchy/themes/dark-knight-samurai")
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Clone Dark Knight outside", result.stderr)
+        self.assertIn("Clone Dark Knight Samurai outside", result.stderr)
         self.assertFalse(self.target.is_symlink())
         self.assertEqual(self.backups(), [])
 

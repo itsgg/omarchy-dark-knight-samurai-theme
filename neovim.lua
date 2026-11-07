@@ -9,7 +9,7 @@
 -- checkout. Installed from GitHub, the theme gets the template's spec.
 return {
   {
-    "bjarneo/aether.nvim",
+    "omacom/aether.nvim",
     branch = "v3",
     name = "aether",
     priority = 1000,
@@ -20,95 +20,95 @@ return {
       -- structure colour and the scope guides onto the dim accent; `muted`
       -- itself, and so every comment and line number, is left alone.
       on_highlights = function(hl)
-        hl.NonText               = { fg = "#283943", nocombine = true } -- snacks links SnacksIndent here; also eol and extends
-        hl.Whitespace            = { fg = "#283943", nocombine = true } -- listchars
-        hl.IblIndent             = { fg = "#283943", nocombine = true } -- indent-blankline's own guide, painted from muted too
-        hl.SnacksIndent          = { fg = "#283943", nocombine = true } -- set outright, so it cannot follow NonText elsewhere
-        hl.SnacksIndentScope     = { fg = "#596D7B", nocombine = true } -- the scope guide: a marker, not a shout
-        hl.SnacksIndentChunk     = { fg = "#596D7B", nocombine = true } -- same guide, chunk style
-        hl.IblScope              = { fg = "#596D7B", nocombine = true } -- indent-blankline's scope guide, which is blue
-        hl.MiniIndentscopeSymbol = { fg = "#596D7B", nocombine = true } -- mini.indentscope, if that is the one
+        hl.NonText               = { fg = "#27272A", nocombine = true } -- snacks links SnacksIndent here; also eol and extends
+        hl.Whitespace            = { fg = "#27272A", nocombine = true } -- listchars
+        hl.IblIndent             = { fg = "#27272A", nocombine = true } -- indent-blankline's own guide, painted from muted too
+        hl.SnacksIndent          = { fg = "#27272A", nocombine = true } -- set outright, so it cannot follow NonText elsewhere
+        hl.SnacksIndentScope     = { fg = "#71717A", nocombine = true } -- the scope guide: a marker, not a shout
+        hl.SnacksIndentChunk     = { fg = "#71717A", nocombine = true } -- same guide, chunk style
+        hl.IblScope              = { fg = "#71717A", nocombine = true } -- indent-blankline's scope guide, which is blue
+        hl.MiniIndentscopeSymbol = { fg = "#71717A", nocombine = true } -- mini.indentscope, if that is the one
 
         -- A current row takes the raised surface: the cursor line, the
         -- picker, a menu and a visual selection. A search hit is left alone.
-        hl.CursorLine                    = { bg = "#162128" }
-        hl.Visual                        = { bg = "#162128" }
-        hl.VisualNOS                     = { bg = "#162128" }
-        hl.SnacksPickerListCursorLine    = { bg = "#162128" }
-        hl.SnacksPickerPreviewCursorLine = { bg = "#162128" }
-        hl.PmenuSel                      = { bg = "#162128" }
-        hl.PmenuMatchSel                 = { bg = "#162128", fg = "#7F97BE" }
-        hl.BlinkCmpMenuSelection         = { bg = "#162128" }
-        hl.QuickFixLine                  = { bg = "#162128", bold = true }
-        hl.WildMenu                      = { bg = "#162128" }
+        hl.CursorLine                    = { bg = "#18181B" }
+        hl.Visual                        = { bg = "#18181B" }
+        hl.VisualNOS                     = { bg = "#18181B" }
+        hl.SnacksPickerListCursorLine    = { bg = "#18181B" }
+        hl.SnacksPickerPreviewCursorLine = { bg = "#18181B" }
+        hl.PmenuSel                      = { bg = "#18181B" }
+        hl.PmenuMatchSel                 = { bg = "#18181B", fg = "#8599B2" }
+        hl.BlinkCmpMenuSelection         = { bg = "#18181B" }
+        hl.QuickFixLine                  = { bg = "#18181B", bold = true }
+        hl.WildMenu                      = { bg = "#18181B" }
 
         -- Syntax: grammar on the grey ramp, names as text, definitions
         -- brightest, and hue only for data. See src/neovim.py.
-        hl["Keyword"]                           = { fg = "#A9B0B5" } -- light_foreground
-        hl["Statement"]                         = { fg = "#A9B0B5" } -- light_foreground
-        hl["Conditional"]                       = { fg = "#A9B0B5" } -- light_foreground
-        hl["Repeat"]                            = { fg = "#A9B0B5" } -- light_foreground
-        hl["Exception"]                         = { fg = "#A9B0B5" } -- light_foreground
-        hl["Define"]                            = { fg = "#A9B0B5" } -- light_foreground
-        hl["Include"]                           = { fg = "#A9B0B5" } -- light_foreground
-        hl["PreProc"]                           = { fg = "#A9B0B5" } -- light_foreground
-        hl["@keyword"]                          = { fg = "#A9B0B5" } -- light_foreground
-        hl["@keyword.function"]                 = { fg = "#A9B0B5" } -- light_foreground
-        hl["Identifier"]                        = { fg = "#CCCFD1" } -- foreground
-        hl["Function"]                          = { fg = "#CCCFD1" } -- foreground
-        hl["@function.call"]                    = { fg = "#CCCFD1" } -- foreground
-        hl["@function.method.call"]             = { fg = "#CCCFD1" } -- foreground
-        hl["@property"]                         = { fg = "#CCCFD1" } -- foreground
-        hl["@lsp.type.property"]                = { fg = "#CCCFD1" } -- foreground
-        hl["@variable.member"]                  = { fg = "#CCCFD1" } -- foreground
-        hl["@variable.parameter"]               = { fg = "#CCCFD1" } -- foreground
-        hl["@string.documentation"]             = { fg = "#8E9CA4" } -- dark_foreground
-        hl["@function"]                         = { fg = "#ECEDEE", bold = true } -- bright_foreground
-        hl["@function.method"]                  = { fg = "#ECEDEE", bold = true } -- bright_foreground
-        hl["@lsp.typemod.function.declaration"] = { fg = "#ECEDEE", bold = true } -- bright_foreground
-        hl["@lsp.typemod.method.declaration"]   = { fg = "#ECEDEE", bold = true } -- bright_foreground
-        hl["Constant"]                          = { fg = "#B88D75" } -- orange
-        hl["Type"]                              = { fg = "#99C1DC" } -- accent
-        hl["StorageClass"]                      = { fg = "#99C1DC" } -- accent
-        hl["Structure"]                         = { fg = "#99C1DC" } -- accent
-        hl["Typedef"]                           = { fg = "#99C1DC" } -- accent
-        hl["@constructor"]                      = { fg = "#99C1DC" } -- accent
+        hl["Keyword"]                           = { fg = "#B0B0BA" } -- light_foreground
+        hl["Statement"]                         = { fg = "#B0B0BA" } -- light_foreground
+        hl["Conditional"]                       = { fg = "#B0B0BA" } -- light_foreground
+        hl["Repeat"]                            = { fg = "#B0B0BA" } -- light_foreground
+        hl["Exception"]                         = { fg = "#B0B0BA" } -- light_foreground
+        hl["Define"]                            = { fg = "#B0B0BA" } -- light_foreground
+        hl["Include"]                           = { fg = "#B0B0BA" } -- light_foreground
+        hl["PreProc"]                           = { fg = "#B0B0BA" } -- light_foreground
+        hl["@keyword"]                          = { fg = "#B0B0BA" } -- light_foreground
+        hl["@keyword.function"]                 = { fg = "#B0B0BA" } -- light_foreground
+        hl["Identifier"]                        = { fg = "#D4D4D8" } -- foreground
+        hl["Function"]                          = { fg = "#D4D4D8" } -- foreground
+        hl["@function.call"]                    = { fg = "#D4D4D8" } -- foreground
+        hl["@function.method.call"]             = { fg = "#D4D4D8" } -- foreground
+        hl["@property"]                         = { fg = "#D4D4D8" } -- foreground
+        hl["@lsp.type.property"]                = { fg = "#D4D4D8" } -- foreground
+        hl["@variable.member"]                  = { fg = "#D4D4D8" } -- foreground
+        hl["@variable.parameter"]               = { fg = "#D4D4D8" } -- foreground
+        hl["@string.documentation"]             = { fg = "#9898A2" } -- dark_foreground
+        hl["@function"]                         = { fg = "#F4F4F5", bold = true } -- bright_foreground
+        hl["@function.method"]                  = { fg = "#F4F4F5", bold = true } -- bright_foreground
+        hl["@lsp.typemod.function.declaration"] = { fg = "#F4F4F5", bold = true } -- bright_foreground
+        hl["@lsp.typemod.method.declaration"]   = { fg = "#F4F4F5", bold = true } -- bright_foreground
+        hl["Constant"]                          = { fg = "#C87A5B" } -- orange
+        hl["Type"]                              = { fg = "#E4E4E7" } -- accent
+        hl["StorageClass"]                      = { fg = "#E4E4E7" } -- accent
+        hl["Structure"]                         = { fg = "#E4E4E7" } -- accent
+        hl["Typedef"]                           = { fg = "#E4E4E7" } -- accent
+        hl["@constructor"]                      = { fg = "#E4E4E7" } -- accent
       end,
       colors = {
-        bg = "#0A1014",
-        dark_bg = "#070B0D",
-        darker_bg = "#040708",
-        lighter_bg = "#162128",
+        bg = "#09090B",
+        dark_bg = "#050507",
+        darker_bg = "#000000",
+        lighter_bg = "#18181B",
 
-        fg = "#CCCFD1",
-        dark_fg = "#8E9CA4",
-        light_fg = "#A9B0B5",
-        bright_fg = "#ECEDEE",
-        muted = "#758A96",
+        fg = "#D4D4D8",
+        dark_fg = "#9898A2",
+        light_fg = "#B0B0BA",
+        bright_fg = "#F4F4F5",
+        muted = "#80808A",
 
-        red = "#BF878C",
-        yellow = "#A1966D",
-        orange = "#B88D75",
-        green = "#7B9F7E",
-        cyan = "#5BA1A3",
-        blue = "#7F97BE",
-        magenta = "#B389A7",
-        brown = "#755845",
+        red = "#D9534F",
+        yellow = "#C8A86B",
+        orange = "#C87A5B",
+        green = "#7DAF82",
+        cyan = "#68A8A5",
+        blue = "#8599B2",
+        magenta = "#B382A8",
+        brown = "#7A6354",
 
-        bright_red = "#E9AEB3",
-        bright_yellow = "#C9BC92",
-        bright_green = "#A1C6A4",
-        bright_cyan = "#82C9CA",
-        bright_blue = "#A4BDE5",
-        bright_magenta = "#DAAFCE",
+        bright_red = "#E87C78",
+        bright_yellow = "#DFC28A",
+        bright_green = "#9EC7A3",
+        bright_cyan = "#89C5C2",
+        bright_blue = "#A3B7CE",
+        bright_magenta = "#CCA2C3",
 
-        accent = "#99C1DC",
-        cursor = "#ECEDEE",
-        foreground = "#CCCFD1",
-        background = "#0A1014",
-        selection = "#222E36",
-        selection_foreground = "#ECEDEE",
-        selection_background = "#222E36",
+        accent = "#E4E4E7",
+        cursor = "#F4F4F5",
+        foreground = "#D4D4D8",
+        background = "#09090B",
+        selection = "#27272A",
+        selection_foreground = "#FAFAFA",
+        selection_background = "#27272A",
       },
     },
   },

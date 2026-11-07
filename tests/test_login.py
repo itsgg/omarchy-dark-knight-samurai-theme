@@ -44,7 +44,9 @@ class LoginTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as scratch:
             stage = Path(scratch)
             build(stage)
-            self.assertIn('fill="#283943"', (stage/'logo.svg').read_text())
+            import tomllib
+            p = tomllib.loads((Path(__file__).resolve().parent.parent / 'colors.toml').read_text())
+            self.assertIn(f'fill="{p["line"]}"', (stage/'logo.svg').read_text())
             component = QQmlComponent(engine, QUrl.fromLocalFile(str(stage/'Main.qml')))
             root = component.create()
             self.assertIsNotNone(root, str(component.errors()))

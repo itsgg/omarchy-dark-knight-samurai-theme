@@ -10,13 +10,17 @@ import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
 
-ORIGINAL_BULLET_LAYOUT = '''      bullet.x = entry.x + 20 + index * (7 + 5);
-      bullet.y = entry.y + entry.image.GetHeight() / 2 - 3.5;
-      bullet.sprites[index].SetPosition(bullet.x, bullet.y, 10002);
+ORIGINAL_BULLET_LAYOUT = '''    if (!bullet.sprites[index]) {
+      # Scale bullet image to 7x7 pixels
+      bullet.sprites[index] = Sprite(bullet.image.Scale(7, 7));
+      position_bullet(index);
     }
 
     bullet.sprites[index].SetOpacity(1);'''
-CENTERED_BULLET_LAYOUT = '''    }
+CENTERED_BULLET_LAYOUT = '''    if (!bullet.sprites[index]) {
+      # Scale bullet image to 7x7 pixels
+      bullet.sprites[index] = Sprite(bullet.image.Scale(7, 7));
+    }
 
     # Reposition every sprite as the masked password grows or shrinks.
     bullet.x = entry.x + (entry.image.GetWidth() - (bullets_to_show * 12 - 5)) / 2 + index * 12;
@@ -26,14 +30,19 @@ CENTERED_BULLET_LAYOUT = '''    }
 
 
 def build(destination, variation):
-    if variation not in ('gotham', 'cape'):
-        raise ValueError('variation must be gotham or cape')
+    if variation not in ('gotham', 'cape', 'samurai'):
+        raise ValueError('variation must be gotham, cape or samurai')
     source = Path(os.environ.get('OMARCHY_PATH', '/usr/share/omarchy')) / 'default/plymouth'
     palette = tomllib.loads((ROOT / 'colors.toml').read_text())
     destination.mkdir(parents=True, exist_ok=True)
     for name in ('omarchy.script', 'bullet.png', 'entry.png', 'progress_bar.png', 'progress_box.png'):
         shutil.copyfile(source / name, destination / name)
-    logo = ROOT / ('unlock.png' if variation == 'gotham' else 'unlock-cape.png')
+    if variation == 'gotham':
+        logo = ROOT / 'unlock.png'
+    elif variation == 'cape':
+        logo = ROOT / 'unlock-cape.png'
+    else:
+        logo = ROOT / 'unlock-samurai.png'
     shutil.copyfile(logo, destination / 'logo.png')
     for name in ('bullet.png', 'entry.png', 'progress_bar.png'):
         colour = palette['line'] if name == 'entry.png' else palette['foreground']

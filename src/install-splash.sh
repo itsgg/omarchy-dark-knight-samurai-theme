@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Install a separate Plymouth theme; leave Omarchy's shared assets intact.
 set -euo pipefail
-variation=${1:-gotham}
-case "$variation" in gotham|cape) ;; *) echo 'Usage: install-splash.sh [gotham|cape]' >&2; exit 1;; esac
+variation=${1:-samurai}
+case "$variation" in gotham|cape|samurai) ;; *) echo 'Usage: install-splash.sh [gotham|cape|samurai]' >&2; exit 1;; esac
 repo=$(cd "$(dirname "$0")/.." && pwd)
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT

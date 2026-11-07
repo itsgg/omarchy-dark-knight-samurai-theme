@@ -5,7 +5,7 @@ Rectangle {
   id: root
   width: 640
   height: 480
-  color: "#0A1014"
+  color: "#09090B"
 
   property string currentUser: userModel.lastUser
   property bool loginFailed: false
@@ -84,7 +84,7 @@ Rectangle {
         Text {
           anchors.fill: parent
           text: "Password"
-          color: "#758A96"
+          color: "#80808A"
           font.family: "JetBrainsMono Nerd Font"
           font.pixelSize: 18
           horizontalAlignment: Text.AlignHCenter

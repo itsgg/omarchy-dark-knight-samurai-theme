@@ -4,21 +4,21 @@ set -euo pipefail
 
 checkout=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 themes="$HOME/.config/omarchy/themes"
-target="$themes/dark-knight"
+target="$themes/dark-knight-samurai"
 
 command -v omarchy >/dev/null || { echo "Omarchy is required." >&2; exit 1; }
 [[ -f $checkout/colors.toml && -f $checkout/neovim.lua ]] || {
-  echo "Run install.sh from a complete Dark Knight checkout." >&2
+  echo "Run install.sh from a complete Dark Knight Samurai checkout." >&2
   exit 1
 }
 
 mkdir -p -- "$themes"
 # Resolve the parent, but not the final link: an existing link to this checkout
 # is the expected result of a previous install.
-target="$(cd -- "$themes" && pwd -P)/dark-knight"
+target="$(cd -- "$themes" && pwd -P)/dark-knight-samurai"
 case "$checkout/" in
   "$target/"*)
-    echo "Clone Dark Knight outside $target, then run its install.sh." >&2
+    echo "Clone Dark Knight Samurai outside $target, then run its install.sh." >&2
     exit 1
     ;;
 esac
@@ -26,7 +26,7 @@ esac
 if [[ ! -L $target || $(readlink -f -- "$target") != "$checkout" ]]; then
   backup=""
   if [[ -e $target || -L $target ]]; then
-    backup_root="$HOME/.local/state/dark-knight/backups"
+    backup_root="$HOME/.local/state/dark-knight-samurai/backups"
     mkdir -p -- "$backup_root"
     backup=$(mktemp -d "$backup_root/install-$(date +%Y%m%d-%H%M%S)-XXXXXX")
     mv -T -- "$target" "$backup/theme"
@@ -42,5 +42,5 @@ if [[ ! -L $target || $(readlink -f -- "$target") != "$checkout" ]]; then
 fi
 
 # A symlink to a working copy is Omarchy's supported opt-in to theme Lua.
-omarchy theme set dark-knight
-echo "Dark Knight installed, including Neovim highlights. Restart Neovim."
+omarchy theme set "Dark Knight Samurai"
+echo "Dark Knight Samurai installed, including Neovim highlights. Restart Neovim."
