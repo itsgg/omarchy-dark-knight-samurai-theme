@@ -17,14 +17,13 @@ from plymouth import build, preview, ORIGINAL_BULLET_LAYOUT, CENTERED_BULLET_LAY
 @unittest.skipUnless(shutil.which('magick') and Path('/usr/share/omarchy/default/plymouth').is_dir(),
                      'requires ImageMagick and installed Omarchy assets')
 class PlymouthTest(unittest.TestCase):
-    def test_variations_install_distinct_emblems(self):
+    def test_build_samurai_emblem(self):
         with tempfile.TemporaryDirectory() as scratch:
-            logos = []
-            for variation in ('gotham', 'cape', 'samurai'):
-                stage = Path(scratch)/variation
-                build(stage, variation)
-                logos.append((stage/'logo.png').read_bytes())
-            self.assertEqual(len(set(logos)), 3)
+            stage = Path(scratch)/'samurai'
+            build(stage, 'samurai')
+            self.assertTrue((stage/'logo.png').is_file())
+            self.assertTrue((stage/'dark-knight-samurai.plymouth').is_file())
+            self.assertTrue((stage/'omarchy.script').is_file())
 
     def test_failed_preview_render_preserves_previous_image(self):
         with tempfile.TemporaryDirectory() as scratch:
@@ -41,13 +40,13 @@ class PlymouthTest(unittest.TestCase):
 
             with patch('plymouth.build', side_effect=assets), patch('plymouth.subprocess.run', side_effect=failed_render):
                 with self.assertRaises(subprocess.CalledProcessError):
-                    preview(target, 'gotham')
+                    preview(target, 'samurai')
             self.assertEqual(target.read_bytes(), b'previous preview')
 
     def test_build_keeps_dialogue_and_hides_only_icon(self):
         with tempfile.TemporaryDirectory(dir=ROOT) as scratch:
             stage = Path(scratch)/'theme'
-            build(stage, 'gotham')
+            build(stage, 'samurai')
             alpha = subprocess.check_output(['magick', str(stage/'lock.png'), '-alpha', 'extract',
                                              '-format', '%[fx:maxima]', 'info:'], text=True)
             self.assertEqual(float(alpha), 0)
@@ -61,17 +60,17 @@ class PlymouthTest(unittest.TestCase):
             self.assertEqual(dialogue(original.read_text()), dialogue((stage/'omarchy.script').read_text()))
             self.assertEqual((stage/'omarchy.script').read_text().count(CENTERED_BULLET_LAYOUT), 1)
             self.assertEqual((stage/'logo.png').read_bytes(), (ROOT/'unlock.png').read_bytes())
-            self.assertIn('ImageDir=/usr/share/plymouth/themes/dark-knight',
-                          (stage/'dark-knight.plymouth').read_text())
+            self.assertIn('ImageDir=/usr/share/plymouth/themes/dark-knight-samurai',
+                          (stage/'dark-knight-samurai.plymouth').read_text())
 
     @unittest.skipUnless(shutil.which('bwrap'), 'requires bubblewrap')
     def test_install_and_failed_rebuild_rollback(self):
         for bootloader, fail in product(('limine', 'mkinitcpio'), ('none', 'rebuild', 'publish')):
             with self.subTest(bootloader=bootloader, fail=fail), tempfile.TemporaryDirectory(dir=ROOT) as scratch:
                 root = Path(scratch)
-                for name in ('themes/dark-knight', 'config', 'var', 'tmp', 'bin'):
+                for name in ('themes/dark-knight-samurai', 'config', 'var', 'tmp', 'bin'):
                     (root/name).mkdir(parents=True)
-                sentinel = root/'themes/dark-knight/previous'
+                sentinel = root/'themes/dark-knight-samurai/previous'
                 sentinel.write_text('previous theme')
                 config = root/'config/plymouthd.conf'
                 config.write_text('[Daemon]\nTheme=omarchy\n')
@@ -81,12 +80,12 @@ if (( $# == 0 )); then echo omarchy; exit 0; fi
 printf '[Daemon]\\nTheme=%s\\n' "$1" > /etc/plymouth/plymouthd.conf
 ''')
                 (root/'bin/mv').write_text('''#!/bin/bash
-if [[ $DK_TEST_FAIL == publish && $1 == /usr/share/plymouth/themes/.dark-knight.* && $2 == /usr/share/plymouth/themes/dark-knight ]]; then exit 1; fi
+if [[ $DK_TEST_FAIL == publish && $1 == /usr/share/plymouth/themes/.dark-knight-samurai.* && $2 == /usr/share/plymouth/themes/dark-knight-samurai ]]; then exit 1; fi
 exec /usr/bin/mv "$@"
 ''')
                 rebuild = """#!/bin/bash
 printf '%s %s\\n' "${0##*/}" "$*" >> /var/tmp/rebuild.log
-if [[ $DK_TEST_FAIL == rebuild ]] && grep -q 'Theme=dark-knight' /etc/plymouth/plymouthd.conf; then exit 1; fi
+if [[ $DK_TEST_FAIL == rebuild ]] && grep -q 'Theme=dark-knight-samurai' /etc/plymouth/plymouthd.conf; then exit 1; fi
 """
                 (root/'bin/mkinitcpio').write_text(rebuild)
                 if bootloader == 'limine':
@@ -102,7 +101,7 @@ if [[ $DK_TEST_FAIL == rebuild ]] && grep -q 'Theme=dark-knight' /etc/plymouth/p
                                             ('config', '/etc/plymouth'), ('var', '/var/tmp'), ('tmp', '/tmp')]:
                     args += ['--bind', str(root/source), destination]
                 env = {**os.environ, 'PATH': f'{root}/bin', 'DK_TEST_FAIL': fail}
-                result = subprocess.run(args+['/bin/bash', str(ROOT/'src/install-splash.sh'), 'gotham'],
+                result = subprocess.run(args+['/bin/bash', str(ROOT/'src/install-splash.sh'), 'samurai'],
                                         env=env, capture_output=True, text=True)
                 if fail != 'none':
                     self.assertNotEqual(result.returncode, 0)
@@ -112,8 +111,8 @@ if [[ $DK_TEST_FAIL == rebuild ]] && grep -q 'Theme=dark-knight' /etc/plymouth/p
                 else:
                     self.assertEqual(result.returncode, 0, result.stderr)
                     self.assertFalse(sentinel.exists())
-                    self.assertIn('Theme=dark-knight', config.read_text())
-                    self.assertTrue((root/'themes/dark-knight/lock.png').is_file())
+                    self.assertIn('Theme=dark-knight-samurai', config.read_text())
+                    self.assertTrue((root/'themes/dark-knight-samurai/lock.png').is_file())
                 log = root/'var/rebuild.log'
                 if fail == 'publish':
                     self.assertFalse(log.exists())

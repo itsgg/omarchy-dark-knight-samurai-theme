@@ -29,20 +29,13 @@ CENTERED_BULLET_LAYOUT = '''    if (!bullet.sprites[index]) {
     bullet.sprites[index].SetOpacity(1);'''
 
 
-def build(destination, variation):
-    if variation not in ('gotham', 'cape', 'samurai'):
-        raise ValueError('variation must be gotham, cape or samurai')
+def build(destination, variation='samurai'):
     source = Path(os.environ.get('OMARCHY_PATH', '/usr/share/omarchy')) / 'default/plymouth'
     palette = tomllib.loads((ROOT / 'colors.toml').read_text())
     destination.mkdir(parents=True, exist_ok=True)
     for name in ('omarchy.script', 'bullet.png', 'entry.png', 'progress_bar.png', 'progress_box.png'):
         shutil.copyfile(source / name, destination / name)
-    if variation == 'gotham':
-        logo = ROOT / 'unlock.png'
-    elif variation == 'cape':
-        logo = ROOT / 'unlock-cape.png'
-    else:
-        logo = ROOT / 'unlock-samurai.png'
+    logo = ROOT / 'unlock.png'
     shutil.copyfile(logo, destination / 'logo.png')
     for name in ('bullet.png', 'entry.png', 'progress_bar.png'):
         colour = palette['line'] if name == 'entry.png' else palette['foreground']
@@ -64,11 +57,11 @@ def build(destination, variation):
         raise ValueError('Plymouth bullet layout changed; inspect the vendor script before building')
     (destination/'omarchy.script').write_text(script.replace(ORIGINAL_BULLET_LAYOUT, CENTERED_BULLET_LAYOUT))
     definition = (source/'omarchy.plymouth').read_text()
-    definition = definition.replace('Name=Omarchy', 'Name=Dark Knight')
-    definition = definition.replace('Description=Omarchy splash screen.', 'Description=Dark Knight splash without a lock icon.')
-    definition = definition.replace('/usr/share/plymouth/themes/omarchy', '/usr/share/plymouth/themes/dark-knight')
+    definition = definition.replace('Name=Omarchy', 'Name=Dark Knight Samurai')
+    definition = definition.replace('Description=Omarchy splash screen.', 'Description=Dark Knight Samurai splash without a lock icon.')
+    definition = definition.replace('/usr/share/plymouth/themes/omarchy', '/usr/share/plymouth/themes/dark-knight-samurai')
     definition = definition.replace('ConsoleLogBackgroundColor=0x1a1b26', f'ConsoleLogBackgroundColor=0x{palette["background"][1:]}')
-    (destination/'dark-knight.plymouth').write_text(definition)
+    (destination/'dark-knight-samurai.plymouth').write_text(definition)
 
 
 def preview(target, variation):

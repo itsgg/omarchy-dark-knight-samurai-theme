@@ -12,9 +12,9 @@ python3 "$repo/src/plymouth.py" "$work" "$variation"
 pkexec /bin/bash -s -- "$work" <<'ROOT'
 set -euo pipefail
 source=$1
-target=/usr/share/plymouth/themes/dark-knight
+target=/usr/share/plymouth/themes/dark-knight-samurai
 [[ ! -L "$target" ]]
-backup=$(mktemp -d /var/tmp/dark-knight-plymouth.XXXXXXXX)
+backup=$(mktemp -d /var/tmp/dark-knight-samurai-plymouth.XXXXXXXX)
 chmod 700 "$backup"
 previous=$(plymouth-set-default-theme)
 select_and_rebuild() {
@@ -29,9 +29,9 @@ select_and_rebuild() {
 if [[ -e /etc/plymouth/plymouthd.conf ]]; then
   cp -a /etc/plymouth/plymouthd.conf "$backup/plymouthd.conf"
 fi
-stage=$(mktemp -d /usr/share/plymouth/themes/.dark-knight.XXXXXXXX)
+stage=$(mktemp -d /usr/share/plymouth/themes/.dark-knight-samurai.XXXXXXXX)
 trap 'rm -rf "$stage"' EXIT
-for asset in dark-knight.plymouth omarchy.script logo.png entry.png bullet.png lock.png progress_bar.png progress_box.png; do
+for asset in dark-knight-samurai.plymouth omarchy.script logo.png entry.png bullet.png lock.png progress_bar.png progress_box.png; do
   install -o root -g root -m 644 "$source/$asset" "$stage/$asset"
 done
 chmod 755 "$stage"
@@ -42,7 +42,7 @@ if ! mv "$stage" "$target"; then
   echo "Plymouth publish failed; previous theme restored. Backup: $backup" >&2
   exit 1
 fi
-if ! select_and_rebuild dark-knight; then
+if ! select_and_rebuild dark-knight-samurai; then
   echo "Plymouth rebuild failed; restoring previous theme. Backup: $backup" >&2
   rm -rf "$target"
   if [[ -d $backup/previous-theme ]]; then mv "$backup/previous-theme" "$target"; fi

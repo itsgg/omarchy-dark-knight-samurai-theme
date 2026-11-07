@@ -1,40 +1,19 @@
 # Dark Knight Samurai
 
-A Japanese ink-wash & Katana Steel Batman theme for [Omarchy](https://omarchy.org).
+A Japanese ink-wash & Katana Steel theme for [Omarchy](https://omarchy.org).
 
 ![Dark Knight Samurai desktop](preview.png)
 
 Obsidian ink and folded katana steel with specular silver reflections.
 The monochromatic palette is tailored directly for the Samurai sumi-e artwork.
 
-## Previews
+## Preview
 
-| Variation | Wallpaper | Boot and disk-unlock screen |
-|---|---|---|
-| Samurai | ![Samurai wallpaper](backgrounds/3-samurai.png) | ![Samurai splash](unlock-samurai.png) |
-| Gotham | ![Gotham wallpaper](backgrounds/1-gotham.png) | ![Gotham splash](preview-unlock.png) |
-| Cape | ![Cape wallpaper](backgrounds/2-cape.png) | ![Cape splash](preview-unlock-cape.png) |
+| Wallpaper | Boot and disk-unlock screen |
+|---|---|
+| ![Samurai wallpaper](backgrounds/1-samurai.png) | ![Samurai Kamon splash](preview-unlock.png) |
 
-Samurai features an ink-wash / sumi-e artwork paired with a circular Japanese Kamon Bat crest on `#09090B` obsidian ground. Gotham uses a layered Gothic and Art Deco skyline with a Bat-Signal. Cape uses the bat emblem centred on a dark ground.
-
-The artwork is fully vector, with no embedded photographs, raster layers,
-gradients or textures. Editable SVGs are in [assets/artwork](assets/artwork/).
-Desktop PNGs are exported at 5120x3200; the SVGs scale to any resolution.
-Splash assets have transparent 1320x480 canvases. The compositions are defined
-in `src/artwork.py` and `src/scenes.py`; regeneration replaces the SVG exports.
-Boot and disk unlock use a dim circular Bat-Signal emblem for Gotham, and a dim
-standalone emblem for Cape. Login uses the standalone emblem at 60% opacity.
-Both use a blue-grey password border, centre password dots and hide the lock icon.
-
-The composition and production research is in
-[the wallpaper brief](docs/WALLPAPER-BRIEF.md).
-
-## Phone and tablet wallpapers
-
-Both designs are available for iPhone, Android and iPad, including portrait
-and landscape iPad layouts. The compositions leave room for the lock-screen
-clock. [Browse the downloads](wallpapers/README.md) or
-[download all eight PNGs](wallpapers/dark-knight-mobile.zip).
+Samurai features an ink-wash / sumi-e artwork paired with an authentic Japanese crossed-katana Kamon crest on `#09090B` obsidian ground.
 
 ## Install
 
@@ -45,7 +24,7 @@ bash ~/.local/share/dark-knight-samurai/install.sh
 
 The installer applies the full theme, including Neovim syntax colours and
 indent guides. It links this working copy into Omarchy and preserves any
-previous install in `~/.local/state/dark-knight/backups/`. Keep the checkout
+previous install in `~/.local/state/dark-knight-samurai/backups/`. Keep the checkout
 in place. Running the installer again is safe.
 
 Switch back to it later with `omarchy theme set "Dark Knight Samurai"`.
@@ -54,71 +33,14 @@ Optional:
 
 ```sh
 # GTK apps and the file chooser follow the theme
-omarchy hook install theme-set ~/.config/omarchy/themes/dark-knight/hooks/gtk-follow-theme
+omarchy hook install theme-set ~/.config/omarchy/themes/dark-knight-samurai/hooks/gtk-follow-theme
 
 # Boot and disk-unlock screen (asks for your password, rebuilds the initramfs)
-bash ~/.config/omarchy/themes/dark-knight/src/install-splash.sh gotham
+bash ~/.config/omarchy/themes/dark-knight-samurai/src/install-splash.sh samurai
+
+# SDDM login screen
+bash ~/.config/omarchy/themes/dark-knight-samurai/src/install-login.sh
 ```
-
-Updates, the standard Omarchy install, and removal are in
-[docs/INSTALL.md](docs/INSTALL.md).
-
-## Choose a variation
-
-If the theme was already installed before these files were added, refresh
-Omarchy's staged copy so both appear in the wallpaper switcher:
-
-```sh
-omarchy theme refresh
-```
-
-After installing or refreshing, apply the Gotham wallpaper with:
-
-```sh
-omarchy theme bg set ~/.local/state/omarchy/current/theme/backgrounds/1-gotham.png
-```
-
-Or apply the Cape wallpaper with:
-
-```sh
-omarchy theme bg set ~/.local/state/omarchy/current/theme/backgrounds/2-cape.png
-```
-
-Use `omarchy theme bg next` to cycle between them. Applying the current theme
-again can advance the wallpaper; `omarchy theme refresh` preserves your selection.
-
-The boot splash is selected separately: Gotham uses the circular Bat-Signal emblem;
-Cape uses the standalone emblem. These commands show a password dialog and rebuild the initramfs.
-For the Gotham splash:
-
-```sh
-bash ~/.config/omarchy/themes/dark-knight/src/install-splash.sh gotham
-```
-
-For the Cape splash:
-
-```sh
-bash ~/.config/omarchy/themes/dark-knight/src/install-splash.sh cape
-```
-
-The installer uses the theme's colours and creates a separate Plymouth theme
-with centred password dots and a hidden lock icon. Changing the desktop
-wallpaper does not change the boot splash.
-
-Install the matching SDDM login screen separately:
-
-```sh
-bash ~/.config/omarchy/themes/dark-knight/src/install-login.sh
-```
-
-This installs a dedicated theme under `/usr/local/share/sddm/themes` and a
-small SDDM theme override. It does not restart your session.
-Autologin may bypass the greeter; the installer leaves autologin unchanged.
-
-![SDDM login screen](preview-login.png)
-
-Desktop lock follows the current wallpaper and keeps Omarchy's authentication
-controls. [View Gotham](preview-lock-gotham.png) or [Cape](preview-lock-cape.png).
 
 ## Palette
 
@@ -146,25 +68,20 @@ shell, Chromium, VS Code, Obsidian), plus:
 
 | File | |
 |---|---|
-| `backgrounds/` | Gotham and Cape wallpapers |
+| `backgrounds/` | Samurai sumi-e wallpaper |
 | `shell.*.toml` | bar, launcher, menu, lock card, control states |
 | `neovim.lua` | quiet indent guides, syntax colour kept for data |
 | `gtk.css`, `gtk3.css` | libadwaita and the GTK3 file chooser |
 | `btop.theme` | monochrome meters |
-| `unlock.png`, `unlock-cape.png` | Gotham and Cape Plymouth splash assets |
+| `unlock.png` | Samurai Kamon Plymouth splash asset |
 
 ## Development
 
 ```sh
-python3 src/palette.py > colors.toml   # fails if a contrast floor is missed
-src/render.sh                          # theme files, flat SVGs, PNGs and previews
-python3 src/artwork.py                 # rerender only the two artwork pairs
-python3 src/mobile.py                  # phone and tablet artwork, preview and ZIP
+src/render.sh                          # theme files and previews
 src/preview.sh                         # retakes preview.png
-python3 -m unittest discover -s tests -v # installer checks; requires bubblewrap
+python3 -m unittest discover -s tests -v # checks suite
 ```
-
-Design notes: [docs/DESIGN.md](docs/DESIGN.md).
 
 ## License
 
